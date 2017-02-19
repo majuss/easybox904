@@ -1,4 +1,4 @@
-# Open your EasyBox 904 xDSL for every provider
+# Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 This is a step by step guide to open your easybox 904 xDSL for the usage with every provider (Telekom, 1&1 etc). This Guide is only supported for the 904 xDSL however it should also work with the LTE version or the EasyBox 804 etc.
 
 # Prerequisites:
