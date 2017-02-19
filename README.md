@@ -47,7 +47,7 @@ Extract the tar with:
 
 Install the compilers for squashfs:
 
-`sudo aptitude install gcc g++
+`sudo aptitude install gcc g++`
 
 Alter the Makefile of squashfs to include LZMA support:
 
@@ -62,10 +62,29 @@ When the compiler was successful install with:
 
 `sudo make install`
 
+If you never created a ssh-key you need to do it with (you can leave everything at default):
+
+`ssh-keygen`
+
+Save an empty file named: "sesame.txt" on the root of your FAT32 formated USB-stick. This file will initialize the ssh access.
+
 To check if the step one was succesful you should check this list:
 
-Type `unsquashfs` a list of options should be displayed.
-Type `binwalk` a list of option should be displayed.
-Check if there is a file named "fullimage_AT904X-03.17.01.16.bin" in your easyboxhack directory.
++ Type `unsquashfs` a list of options should be displayed.
++ Type `binwalk` a list of option should be displayed.
++ Check if there is a file named "fullimage_AT904X-03.17.01.16.bin" in your easyboxhack directory.
++ There should be a empty file on your thumb drive named "sesame.txt". Now put it aside we will need it later.
 
-`wget https://downloads.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fsquashfs%2F&ts=1487517053&use_mirror=netix
+
+#Step two
+
+After setting up everything we will analyse the firmware image and extract the filesystem to add the ssh key etc.
+
+Inside of your `easyboxhack` directory type:
+
+`binwalk fullimage_AT904X-03.17.01.16.bin`
+
+The output should look like this:
+
+![binwalk](https://github.com/majuss/easybox904/blob/master/static/binwalk_out.png)
+
