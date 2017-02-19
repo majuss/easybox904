@@ -171,10 +171,13 @@ Host easy
 	User root
 	IdentityFile ~/.ssh/id_rsa.pub
 	KexAlgorithms diffie-hellman-group1-sha1
-
 ```
 When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
+
+
 ![ssh](https://github.com/majuss/easybox904/blob/master/static/ssh.png)
+
+
 Now we can add your DSL login credentials which you got from your provider.
 ```
 /usr/sbin/ccfg_cli set username@wan000=YOUR_USERNAME
