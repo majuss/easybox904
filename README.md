@@ -89,59 +89,59 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 You can see that the squashfs ranges from bit 64 to 22192643. This is what we need to extract.
 
 To archive it type:
-```
+```bash
 dd if=fullimage_AT904X-03.17.01.16.bin of=first.part skip=0 count=64 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=second.part skip=64 count=22192579 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=third.part skip=22192643 bs=1
 ```
 The second part contains the squashfs. We need to extract the filesystem inside with:
-```
+```bash
 unsquashfs second.part
 ```
 This creates the directory `squashfs-root`. cd into it with `cd squashfs-root`. Then run `nano` on `etc/init.d/rcS` and append the following lines on the bottom:
-```
+```bash
 stty -F /dev/ttyS0 115200
 enable_console.sh
 (cd /tmp; nohup sh -c "sleep 200; exec dropbear" & )
 ```
 This ensure that dropbear, the ssh server, is always running.
 Now to add your ssh key first untar the config directory with:
-```
+```bash
 tar -xzf etc/dftconfig.tgz
 ```
 Now open a second terminal where you run:
-```
+```bash
 cat ~/.ssh/id_rsa.pub
 ```
 and copy the outputted ssh key.
 
 Back in the squashfs-root run and paste your key at the end:
-```
+```bash
 nano config/cert/authorized_keys
 ```
 Now compress the config, delete the old package, copy the new and delete the extracted config directory.
-```
+```bash
 tar -zcvf dftconfig.tgz config
 rm -rf etc/dftconfig.tgz
 cp dftconfig.tgz etc/
 rm -rf config
 ```
 After that we will repack the squshfs:
-```
+```bash
 cd ..
 mksquashfs  squashfs-root  second.part.new  -comp lzma  -b 131072  -no-xattrs  -all-root
 ```
 The new second.part (squashfs) will be smaller than the old one. We need to add a padding with the size of the difference between the new and the old second.part.
-```
+```bash
 ls -la sec*
 ```
 Now read the size in the third column. The old second.part should be 22192579 bits and the new something around 22052864. Now calculate the difference. In this case 139715 bit. Now create the padding with this size:
 
-```
+```bash
 dd bs=1 count=139715 if=/dev/zero of=padding
 ```
 Now we are gonna create the new binary image:
-```
+```bash
 cat first.part second.part.new padding third.part > fullimage.img
 ```
 
@@ -159,11 +159,11 @@ Now connect the computer running the tftp server to the easybox. The easybox sho
 Now you should skip the setup process on the easybox and restart it again after setting a login password.
 
 Run:
-```
+```bash
 nano .ssh/config
 ```
 and paste:
-```
+```bash
 Host easy
 	Hostname 192.168.2.1
 	User root
@@ -171,7 +171,7 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
-```
+```bash
 ssh easy
 root@192.168.2.1's password:
 
@@ -184,7 +184,7 @@ root@easy:~#
 ```
 
 Now we can add your DSL login credentials which you got from your provider.
-```
+```bash
 /usr/sbin/ccfg_cli set username@wan000=YOUR_USERNAME
 /usr/sbin/ccfg_cli set username@wan001=YOUR_USERNAME
 /usr/sbin/ccfg_cli set password@wan000=YOUR_PASSWORD
