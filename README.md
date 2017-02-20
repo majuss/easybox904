@@ -3,7 +3,7 @@ This is a step by step guide to open your easybox 904 xDSL for the usage with ev
 
 # Prerequisites:
 - EasyBox 904 xDSL
-- computer with a Linux distribution (a Raspberry Pi is fine)
+- computer (with a Linux distribution, a Raspberry Pi is fine or a Live Linux on a thumb drive: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
 - LAN cables
 - FAT32 USB stick
 - working internet connection
@@ -90,7 +90,7 @@ You can see that the squashfs ranges from bit 64 to 22192643. This is what we ne
 
 To archive it type:
 ```bash
-dd if=fullimage_AT904X-03.17.01.16.bin of=first.part skip=0 count=64 bs=1
+dd if=fullimage_AT904X-03.17.01.16.bin of=first.part count=64 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=second.part skip=64 count=22192579 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=third.part skip=22192643 bs=1
 ```
@@ -171,7 +171,7 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
-```bash
+```
 ssh easy
 root@192.168.2.1's password:
 
@@ -192,3 +192,28 @@ Now we can add your DSL login credentials which you got from your provider.
 /usr/sbin/ccfg_cli commitcfg
 ```
 And then run `reboot` to restart the EasyBox. If everything gone right your EasyBoy should running with a different provider now.
+
+
+#VoIP configuration
+
+
+See this: https://www.telekom.de/hilfe/festnetz-internet-tv/ip-basierter-anschluss/einstellungen-fuer-die-ip-telefonie-mit-anderen-clients?samChecked=true
+
+You have to alter these config values:
+```
+lineEnable@sip_acc_1 = 1
+userId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE without whitespace etc.(Vorwahl)
+userId_area@sip_acc_1 = AREA CODE
+userId_local@sip_acc_1 = USER ID / USERNAME
+account_name@sip_acc_1 =
+displayName@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
+password@sip_acc_1 = SIP PASSWORD
+useAuthId@sip_acc_1 = 1
+authId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
+realm@sip_acc_1 = SIP DOMAIN
+sipdomain@sip_acc_1 = SIP DOMAIN
+registrar@sip_acc_1 = SIP DOMAIN
+proxy@sip_acc_1 = SIP DOMAIN
+outboundProxy@sip_acc_1 = SIP PROXY
+```
+
