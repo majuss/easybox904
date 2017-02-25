@@ -1,0 +1,252 @@
+#Benutze deine EasyBox mit jedem Provider -- Ohne MIC!
+
+
+# Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
+Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL, aber jede andere EasyBox sollte auch gehen (804 etc.).
+
+
+# Voraussetzungen:
+- EasyBox (904 xDSL)
+- Computer (mit Linux, einfach ein Ubuntu Live Stick erstellen: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
+- LAN Kabel
+- FAT32 formatierter USB Stick
+- funktionierende Internetverbindung
+
+#Schritt 1
+
+Alles in diesem Schritt wird unter Linux im Terminal ausgeführt.
+
+Sämtliche benötigte Software installieren:
+```bash
+sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake build-essential
+```
+
+Arbeitsverzeichnis erstellen mit:
+```bash
+mkdir easyboxhack
+cd easyboxhack
+```
+DIe **originale Vodafone Firmware** downloaden:
+```bash
+wget https://www.vodafone.de/downloadarea/fullimage_AT904X-03.17.01.16.zip
+```
+Das .zip mit folgendem extrahieren:
+```bash
+unzip fullimage_AT904X-03.17.01.16.zip
+```
+`squashfs` downloaden, ein Programm, dass die Extraktion des Dateisystems der EasyBox erlaubt:
+```bash
+wget https://heanet.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
+```
+Das .tar extrahieren:
+```bash
+tar -xzf squashfs4.3.tar.gz
+```
+Das Makefile verändern, damit squashfs LZMA extrahieren kann (nano beenden mit ctrl + x):
+```bash
+cd squashfs4.3/squashfs-tools
+nano Makefile
+```
+Zur Zeile mit "LZMA_XZ_SUPPORT = 1" scrollen und die `#` am Anfang löschen. Danach mit `make` squashfs kompilieren.
+```bash
+make
+```
+Wenn der Compiler erfolgreich war, squashfs installieren mit:
+```bash
+sudo make install
+```
+Auf einem Live-Linux oder wenn du noch nie eine SSH-Verbindung verwendet hast, musst du SSH-Schlüssel erstellen:
+```bash
+ssh-keygen
+```
+
+Jetzt eine leere Datei auf dem USB-Stick erstellen, mit dem Namen "sesame.txt". Es sollte sich nichts anderes auf dem Stick befinden.
+
+Noch einmal die Zusammenfassung um Schritt 1 zu überprüfen:
+
++ `unsquashfs` eingeben und Enter drücken. Wenn sämtliche Optionen angezeigt werden war die Installation erfolgreich.
++ `binwalk` eingeben und Enter drücken. Wenn sämtliche Optionen angezeigt werden war die Installation erfolgreich.
++ Im Arbeitsverzeichnis nachsehen ob sich dort "fullimage_AT904X-03.17.01.16.bin" befindet.
++ Es sollte sich eine leere Datei auf dem Stick befinden, mit dem Namen "sesame.txt" (zB. mit dem Befehl `touch sesame.txt` erstellen und rüber kopieren)
+
+Wenn irgendwas davon nicht wie erwartet funktioniert, bitte hier einfach bei GitHub ein Issue aufmachen.
+
+#Schritt 2
+
+Nachdem alles vorbereitet wurde, wird jetzt die Firmware analysiert, dass Dateisystem extrahiert und der ssh-key hinzugefügt.
+
+Im `easyboxhack` Verzeichnis folgendes eingeben:
+```bash
+binwalk fullimage_AT904X-03.17.01.16.bin
+```
+Der Output sollte so aussehen:
+```bash
+binwalk fullimage_AT904X-03.17.01.16.bin
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             uImage header, header size: 64 bytes, header CRC: 0xD655816D, created: Fri Jun 12 03:17:21 2015, image size: 22192128 bytes, Data Address: 0x0, Entry Point: 0x0, data CRC: 0x554256C3, OS: Linux, CPU: MIPS, image type: Filesystem Image, compression type: lzma, image name: "LTQCPE RootFS"
+64            0x40            Squashfs filesystem, little endian, version 4.0, compression:lzma, size: 22189643 bytes,  2822 inodes, blocksize: 131072 bytes, created: Fri Jun 12 03:17:18 2015
+22192643      0x152A203       PEM certificate
+22198336      0x152B840       uImage header, header size: 64 bytes, header CRC: 0xDE8F55A1, created: Fri Jun 12 03:16:59 2015, image size: 1572800 bytes, Data Address: 0x80002000, Entry Point: 0x800061B0, data CRC: 0xD3A38B77, OS: Linux, CPU: MIPS, image type: OS Kernel Image, compression type: lzma, image name: "MIPS LTQCPE Linux-2.6.32.32"
+22198400      0x152B880       LZMA compressed data, properties: 0x5D, dictionary size: 8388608 bytes, uncompressed size: 4608900 bytes
+23771651      0x16ABA03       PEM certificate
+```
+Man kann das Squashfs nach dem 64ten Bit sofort erkennen. Wir müssen jetzt mit `dd` das Image in 3 Teile zerlegen. Die ersten 64 Bit, dass squashfs und der Rest.
+
+Das machen wir mit:
+```bash
+dd if=fullimage_AT904X-03.17.01.16.bin of=first.part count=64 bs=1
+dd if=fullimage_AT904X-03.17.01.16.bin of=second.part skip=64 count=22192579 bs=1
+dd if=fullimage_AT904X-03.17.01.16.bin of=third.part skip=22192643 bs=1
+```
+Der zweite Part (second.part) enthält das squashfs. Nun extrahieren wir das Filesystem:
+```bash
+unsquashfs second.part
+```
+Das erstellt das Verzeichnis `squashfs-root`. Nun wechseln wir mit: `cd squashfs-root` hinein. Dann starten wir wieder nano: `nano etc/init.d/rcS` and fügen folgendes am Ende der Datei ein:
+```bash
+stty -F /dev/ttyS0 115200
+enable_console.sh
+(cd /tmp; nohup sh -c "sleep 200; exec dropbear" & )
+```
+Das stellt sicher, dass der ssh-Server immer läuft.
+Nun fügen wir unseren ssh-key hinzu.
+Dazu müssen wir zuerst das config Verzeichnis entpacken:
+```bash
+tar -xzf etc/dftconfig.tgz
+```
+Nun öffnen wir ein zweites Terminal (ctrl + shift + n) und führen aus:
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+Den ausgegebenen ssh-key kopieren und dieses Terminal Fenster schließen.
+
+Zurück im anderen Terminal fügen wir den ssh-key am Ende folgender Datei ein (ctrl + x zum beenden von nano):
+```bash
+nano config/cert/authorized_keys
+```
+Nun müssen wir das config Verzeichnis wieder packen, das alte gepackte und das entpackte löschen und das neue in die richtige Position kopieren, mit:
+```bash
+tar -zcvf dftconfig.tgz config
+rm -rf etc/dftconfig.tgz
+cp dftconfig.tgz etc/
+rm -rf config
+```
+Nun packen wir das squashfs wieder zusammen:
+```bash
+cd ..
+mksquashfs  squashfs-root  second.part.new  -comp lzma  -b 131072  -no-xattrs  -all-root
+```
+Der neue Part zwei wird kleiner sein als der alte, deshalb müssen wir ihn künstlich verlängen, bzw. einen Lückenfüller einfügen, um am Ende wieder die selbe Größe der Firmware zu haben:
+```bash
+ls -la sec*
+```
+Das oben stehende Befehl listet die beiden second.parts auf. In der dritten Spalte steht die Größe in Bit. Nun einfach die Differenz bilden. Bei mit war der alte 22192579 bits und der neue ~22052864, macht eine Differenz von 139715 bits. Genau mit der Größe erstellen wir den Lückenfüller:
+```bash
+dd bs=1 count=139715 if=/dev/zero of=padding
+```
+Nun erstellen wir das komplette Firmware-image mit dem neuen Part zwei:
+```bash
+cat first.part second.part.new padding third.part > fullimage.img
+```
+
+fullimage.img sollte jetzt genauso groß sein wie die originale firmware (`ls -la`).
+
+
+#Step three
+
+Um die neue Firmware auf die EasyBox zu bekommen benötigen wir einen tftp-Server.
+
+Dazu einfach die EasyBox nehmen, ausschalten, und beim Anschalten den Reset-Knopf, ca. 10 Sekunden lang drücken. Ein roter Bildschirm erscheint mit Anweisungen zur Wiederherstellung.
+
+Jetzt installieren wir den tftp-Server mit:
+````bash
+sudo apt-get install tftpd-hpa
+```
+Jetzt werdet ihr nach einem Pfad gefragt, lasst ihn einfach auf Standard. Wir müssen noch die Konfiguration ändern mit `nano /etc/default/tftpd-hpa`:
+````bash
+TFTP_USERNAME="tftp"
+TFTP_DIRECTORY="/srv/tftp"
+TFTP_ADDRESS="192.168.2.100:69"
+TFTP_OPTIONS="--secure"
+```
+Jetzt das Firmware image entsprechend kopieren:
+```bash
+sudo cp fullimage.img /srv/tftp
+```
+
+Noch den Server neustarten:
+```bash
+sudo service tftpd-hpa restart
+```
+Jetzt den Linux-Rechner per LAN mit der EasyBox verbinden. Sie sollte anfangen das image zu downloaden. Wenn nicht schaltet sie aus und drück nochmal reset.
+
+Wenn die EasyBox fertig ist, solltet ihr sie neustarten und die Einrichtung, bis auf das Kennwort, überspringen.
+
+Jetzt wieder auf dem Linux Rechner im Terminal:
+```bash
+nano .ssh/config
+```
+
+Folgendes einfügen:
+```bash
+Host easy
+	Hostname 192.168.2.1
+	User root
+	IdentityFile ~/.ssh/id_rsa.pub
+	KexAlgorithms diffie-hellman-group1-sha1
+```
+Nachdem ihr nano beendet habt, jetzt folgendes eingeben:
+````bash
+ssh easy
+```
+Jetzt werdet ihr nach dem Admin Passwort gefragt, einfach eingeben (es wird nichts angezeigt bei der Passwort eingabe).
+Der Output sollte jetzt so aussehen:
+
+```
+ssh easy
+root@192.168.2.1's password:
+
+
+BusyBox v1.16.2 (2015-06-12 10:30:01 CST) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+vr9 FW for VOX 2.0
+root@easy:~#
+```
+
+Jetzt können wir eure Logindetails vom neuen Provider eingeben:
+```bash
+/usr/sbin/ccfg_cli set username@wan000=DEIN_BENUTZER
+/usr/sbin/ccfg_cli set username@wan001=DEIN_BENUTZER
+/usr/sbin/ccfg_cli set password@wan000=DEIN_PASSWORT
+/usr/sbin/ccfg_cli set password@wan001=DEIN_PASSWORT
+/usr/sbin/ccfg_cli commitcfg
+```
+Jetzt `reboot` eingeben um sie neuzustarten. Ihr solltet jetzt eine funktionierende Internetverbindung haben.
+
+
+#VoIP Konfiguration (Festnetz übers Internet)
+
+
+Das erstmal studieren: https://www.telekom.de/hilfe/festnetz-internet-tv/ip-basierter-anschluss/einstellungen-fuer-die-ip-telefonie-mit-anderen-clients?samChecked=true
+
+Nachdem per ssh mit `ssh easy` die Verbindung zur EasyBox hergestellt wurde, folgende Konfigurationen ändern (wie oben auch schon):
+```
+lineEnable@sip_acc_1 = 1
+userId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE without whitespace etc.(Vorwahl)
+userId_area@sip_acc_1 = AREA CODE
+userId_local@sip_acc_1 = USER ID / USERNAME
+account_name@sip_acc_1 =
+displayName@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
+password@sip_acc_1 = SIP PASSWORD
+useAuthId@sip_acc_1 = 1
+authId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
+realm@sip_acc_1 = SIP DOMAIN
+sipdomain@sip_acc_1 = SIP DOMAIN
+registrar@sip_acc_1 = SIP DOMAIN
+proxy@sip_acc_1 = SIP DOMAIN
+outboundProxy@sip_acc_1 = SIP PROXY
+```
+
