@@ -14,7 +14,7 @@ Everything in step one is performed on the **Linux computer** with a **terminal*
 
 Install all required software:
 ```bash
-sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake build-essential
+sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake
 ```
 
 Create a working directory with:

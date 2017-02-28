@@ -18,7 +18,7 @@ Alles in diesem Schritt wird unter Linux im Terminal ausgeführt.
 
 Sämtliche benötigte Software installieren:
 ```bash
-sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake build-essential
+sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake
 ```
 
 Arbeitsverzeichnis erstellen mit:
@@ -42,12 +42,12 @@ Das .tar extrahieren:
 ```bash
 tar -xzf squashfs4.3.tar.gz
 ```
-Das Makefile verändern, damit squashfs LZMA extrahieren kann (nano beenden mit ctrl + x):
+Das Makefile verändern, damit squashfs LZMA extrahieren kann:
 ```bash
 cd squashfs4.3/squashfs-tools
 nano Makefile
 ```
-Zur Zeile mit "LZMA_XZ_SUPPORT = 1" scrollen und die `#` am Anfang löschen. Danach mit `make` squashfs kompilieren.
+Zur Zeile mit "LZMA_XZ_SUPPORT = 1" scrollen und die `#` am Anfang löschen (nano beenden mit ctrl + x). Danach mit `make` squashfs kompilieren.
 ```bash
 make
 ```
@@ -158,7 +158,7 @@ fullimage.img sollte jetzt genauso groß sein wie die originale firmware (`ls -l
 
 Um die neue Firmware auf die EasyBox zu bekommen benötigen wir einen tftp-Server.
 
-Dazu einfach die EasyBox nehmen, ausschalten, und beim Anschalten den Reset-Knopf, ca. 10 Sekunden lang drücken. Ein roter Bildschirm erscheint mit Anweisungen zur Wiederherstellung.
+Dazu einfach die EasyBox nehmen, ausschalten, den USB Stick mit sesame.txt anstecken (und dran lassen), und beim Anschalten den Reset-Knopf, ca. 10 Sekunden lang drücken. Ein roter Bildschirm erscheint mit Anweisungen zur Wiederherstellung.
 
 Jetzt installieren wir den tftp-Server mit:
 ````bash
