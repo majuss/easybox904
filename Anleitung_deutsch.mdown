@@ -34,9 +34,9 @@ Das .zip mit folgendem extrahieren:
 ```bash
 unzip fullimage_AT904X-03.17.01.16.zip
 ```
-`squashfs` downloaden, ein Programm, dass die Extraktion des Dateisystems der EasyBox erlaubt:
+`squashfs` downloaden, ein Programm, dass die Extraktion des Dateisystems der EasyBox erlaubt (oder manuell von der SF-Seite: https://sourceforge.net/projects/squashfs/):
 ```bash
-wget https://heanet.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
+wget https://master.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
 ```
 Das .tar extrahieren:
 ```bash

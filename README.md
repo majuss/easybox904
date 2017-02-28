@@ -30,9 +30,9 @@ Then extract the zip with:
 ```bash
 unzip fullimage_AT904X-03.17.01.16.zip
 ```
-Download `squashfs`, a utility to extract the filesystem from the firmware:
+Download `squashfs`, a utility to extract the filesystem from the firmware (or manual from the website: https://sourceforge.net/projects/squashfs/):
 ```bash
-wget https://heanet.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
+wget https://master.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
 ```
 Extract the tar with:
 ```bash
