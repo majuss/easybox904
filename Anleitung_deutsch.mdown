@@ -194,7 +194,7 @@ Folgendes einfügen:
 Host easy
 	Hostname 192.168.2.1
 	User root
-	IdentityFile ~/.ssh/id_rsa.pub
+	IdentityFile ~/.ssh/id_rsa
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 Nachdem ihr nano beendet habt, jetzt folgendes eingeben:

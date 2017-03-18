@@ -167,7 +167,7 @@ and paste:
 Host easy
 	Hostname 192.168.2.1
 	User root
-	IdentityFile ~/.ssh/id_rsa.pub
+	IdentityFile ~/.ssh/id_rsa
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
