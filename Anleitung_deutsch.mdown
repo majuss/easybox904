@@ -2,7 +2,7 @@
 
 
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
-Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL, aber jede andere EasyBox sollte auch gehen (804 etc.).
+Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL (Die Firmware der 804 ist per crypto-key gesichert und kann nicht modifiziert werden).
 
 
 # Voraussetzungen:
@@ -154,7 +154,7 @@ cat first.part second.part.new padding third.part > fullimage.img
 fullimage.img sollte jetzt genauso groß sein wie die originale firmware (`ls -la`).
 
 
-#Step three
+#Schritt 3
 
 Um die neue Firmware auf die EasyBox zu bekommen benötigen wir einen tftp-Server.
 
