@@ -1,28 +1,29 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 This is a step by step guide to open your easybox 904 xDSL for the usage with every provider (Telekom, 1&1 etc). This Guide is only supported for the 904 xDSL (the firmware of the 804 is protected by encryption and cannot be modified this easy). The Guide will also work with almost any vectoring connection.
 
-This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: https://github.com/Quallenauge/Easybox-904-XDSL and https://forum.openwrt.org/viewtopic.php?id=44676.
+This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: [Quallenauges openWRT-fork](https://github.com/Quallenauge/Easybox-904-XDSL)
+ and [openWRT-forum](https://forum.openwrt.org/viewtopic.php?id=44676).
 
-#Fast and easy installation
+# Fast and easy installation
 
-# Prerequisites:
+## Prerequisites:
 - EasyBox 904 xDSL
 - Working internet connection
 - FAT32 formatted USB-stick
 - Computer and LAN cable
 
 
-1. Downlaod this opened firmware image: https://github.com/majuss/easybox904/raw/master/fullimage.img
+1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
 2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick
 3. Start a tftp-server on your computer:
-	Windows: http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073
-	Linux: https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/
-	Mac: https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/
+	Windows: [tftp setup](http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073)
+	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
+	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
 4. Set the IP of your computer to: 192.168.2.100 and copy the downloaded firmware image to the transfer directory of your tftp-server
 5. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
 6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USb-stick.
 7. Turn on the Box and change the admin password. Pull out the USB-stick and turn off the Box.
-8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this:
+8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this (Windows users please googel how to setup cygwin and ssh):
 ```
 Host easy
 	Hostname 192.168.2.1
@@ -30,20 +31,21 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 This will create a shortcut to connect to the Easybox.
+
 9. Run `ssh easy` and login. Now enter these commands according to your internet-connection:
 
-#ADSL:
+## ADSL:
 ```
 ccfg_cli set username@wan000=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de    //example for Telekom customers, just enter your username provided by your ISP
 ccfg_cli set password@wan000=[Password]
 ```
-#VDSL:
+## VDSL:
 ```
 ccfg_cli set username@wan050=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de
 ccfg_cli set password@wan050=[Password]
 ccfg_cli set vlan_id@wan050=7
 ```
-VOIP:
+## VOIP:
 ```
 ccfg_cli set lineEnable@sip_acc_1=1
 ccfg_cli set userId@sip_acc_1=[AreaCode][PhoneNumber]
@@ -63,7 +65,7 @@ ccfg_cli set useOutboundProxy@sip_acc_1=0
 ccfg_cli set useDNSSRV@sip_acc_1=1
 ccfg_cli set dtmfTxMethod@sip_acc_1=1
 ```
-Activation:
+## Activation:
 ```
 ccfg_cli set ivr_mode@bootstrap=2
 ccfg_cli set arcor_pinConf@bootstrap=1
@@ -71,7 +73,7 @@ ccfg_cli set arcor_customer@bootstrap=1
 ccfg_cli set keep_in_act@bootstrap=0
 ccfg_cli set FirstUseDate@tr69=2015-05-24T01:07:49
 ```
-Save Changes:
+## Save Changes:
 ```
 ccfg_cli commitcfg
 ```
@@ -82,14 +84,14 @@ ccfg_cli commitcfg
 
 # Manual installation and own image creation (optional)
 
-# Prerequisites:
+## Prerequisites:
 - EasyBox 904 xDSL
 - computer (with a Linux distribution, a Raspberry Pi is fine or a Live Linux on a thumb drive: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
 - LAN cables
 - FAT32 USB-stick
 - working internet connection
 
-#Step One
+## Step One
 
 Everything in step one is performed on the **Linux computer** with a **terminal**.
 
@@ -146,7 +148,7 @@ To check if the step one was succesful you should check this list:
 + There should be a empty file on your thumb drive named "sesame.txt". Now put it aside we will need it later.
 
 
-#Step two
+## Step two
 
 After setting up everything we will analyse the firmware image and extract the filesystem to add the ssh key etc.
 
@@ -228,7 +230,7 @@ cat first.part second.part.new padding third.part > fullimage.img
 
 Compare the filesize from fullimage.img and the original firmware.bin (with `ls -la`). They should have the same size.
 
-#Step three
+## Step three
 
 We're now gonna flash the new firmware onto the easybox with the help of a tftp server.
 Grep your easybox and start it and immedeatly press the reset button for about 10 seconds. A red screen should appear on the display. It describes the recovery process and tells you which IP you should use and the correct filename of the new image.
@@ -248,7 +250,6 @@ and paste:
 Host easy
 	Hostname 192.168.2.1
 	User root
-	IdentityFile ~/.ssh/id_rsa
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
@@ -265,37 +266,8 @@ root@easy:~#
 ```
 
 Now we can add your DSL login credentials which you got from your provider.
-```bash
-/usr/sbin/ccfg_cli set username@wan000=YOUR_USERNAME
-/usr/sbin/ccfg_cli set username@wan001=YOUR_USERNAME
-/usr/sbin/ccfg_cli set password@wan000=YOUR_PASSWORD
-/usr/sbin/ccfg_cli set password@wan001=YOUR_PASSWORD
-/usr/sbin/ccfg_cli commitcfg
-```
-And then run `reboot` to restart the EasyBox. If everything gone right your EasyBoy should running with a different provider now.
+
+See in the fast and easy guide.
 
 
-#VoIP configuration
-
-
-See this: https://www.telekom.de/hilfe/festnetz-internet-tv/ip-basierter-anschluss/einstellungen-fuer-die-ip-telefonie-mit-anderen-clients?samChecked=true
-
-You have to alter these config values:
-```
-lineEnable@sip_acc_1 = 1
-userId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE without whitespace etc.(Vorwahl)
-userId_area@sip_acc_1 = AREA CODE
-userId_local@sip_acc_1 = USER ID / USERNAME
-account_name@sip_acc_1 =
-displayName@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
-password@sip_acc_1 = SIP PASSWORD
-useAuthId@sip_acc_1 = 1
-authId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
-realm@sip_acc_1 = SIP DOMAIN
-sipdomain@sip_acc_1 = SIP DOMAIN
-registrar@sip_acc_1 = SIP DOMAIN
-proxy@sip_acc_1 = SIP DOMAIN
-outboundProxy@sip_acc_1 = SIP PROXY
-```
-
-//////////////Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
+// Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
