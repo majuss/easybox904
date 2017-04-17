@@ -1,6 +1,14 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 This is a step by step guide to open your easybox 904 xDSL for the usage with every provider (Telekom, 1&1 etc). This Guide is only supported for the 904 xDSL (the firmware of the 804 is protected by encryption and cannot be modified this easy).
 
+#Fast and easy installation
+
+1. Downlaod this opened firmware image:
+
+
+
+# Manual installation and own image creation (optional)
+
 # Prerequisites:
 - EasyBox 904 xDSL
 - computer (with a Linux distribution, a Raspberry Pi is fine or a Live Linux on a thumb drive: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)

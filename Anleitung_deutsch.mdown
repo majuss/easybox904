@@ -128,9 +128,9 @@ nano config/cert/authorized_keys
 ```
 Nun müssen wir das config Verzeichnis wieder packen, das alte gepackte und das entpackte löschen und das neue in die richtige Position kopieren, mit:
 ```bash
+rm etc/dftconfig.tgz
 tar -zcvf dftconfig.tgz config
-rm -rf etc/dftconfig.tgz
-cp dftconfig.tgz etc/
+mv dftconfig.tgz etc/
 rm -rf config
 ```
 Nun packen wir das squashfs wieder zusammen:
