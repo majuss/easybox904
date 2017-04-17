@@ -1,9 +1,82 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
-This is a step by step guide to open your easybox 904 xDSL for the usage with every provider (Telekom, 1&1 etc). This Guide is only supported for the 904 xDSL (the firmware of the 804 is protected by encryption and cannot be modified this easy).
+This is a step by step guide to open your easybox 904 xDSL for the usage with every provider (Telekom, 1&1 etc). This Guide is only supported for the 904 xDSL (the firmware of the 804 is protected by encryption and cannot be modified this easy). The Guide will also work with almost any vectoring connection.
+
+This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: https://github.com/Quallenauge/Easybox-904-XDSL and https://forum.openwrt.org/viewtopic.php?id=44676.
 
 #Fast and easy installation
 
-1. Downlaod this opened firmware image:
+# Prerequisites:
+- EasyBox 904 xDSL
+- Working internet connection
+- FAT32 formatted USB-stick
+- Computer and LAN cable
+
+
+1. Downlaod this opened firmware image: https://github.com/majuss/easybox904/raw/master/fullimage.img
+2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick
+3. Start a tftp-server on your computer:
+	Windows: http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073
+	Linux: https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/
+	Mac: https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/
+4. Set the IP of your computer to: 192.168.2.100 and copy the downloaded firmware image to the transfer directory of your tftp-server
+5. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
+6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USb-stick.
+7. Turn on the Box and change the admin password. Pull out the USB-stick and turn off the Box.
+8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this:
+```
+Host easy
+	Hostname 192.168.2.1
+	User root
+	KexAlgorithms diffie-hellman-group1-sha1
+```
+This will create a shortcut to connect to the Easybox.
+9. Run `ssh easy` and login. Now enter these commands according to your internet-connection:
+
+#ADSL:
+```
+ccfg_cli set username@wan000=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de    //example for Telekom customers, just enter your username provided by your ISP
+ccfg_cli set password@wan000=[Password]
+```
+#VDSL:
+```
+ccfg_cli set username@wan050=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de
+ccfg_cli set password@wan050=[Password]
+ccfg_cli set vlan_id@wan050=7
+```
+VOIP:
+```
+ccfg_cli set lineEnable@sip_acc_1=1
+ccfg_cli set userId@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set userId_area@sip_acc_1=[AreaCode]
+ccfg_cli set userId_local@sip_acc_1=[PhoneNumber]
+ccfg_cli set account_name@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set displayName@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set password@sip_acc_1=
+ccfg_cli set useAuthId@sip_acc_1=0
+ccfg_cli set authId@sip_acc_1=
+ccfg_cli set realm@sip_acc_1=tel.t-online.de
+ccfg_cli set sipdomain@sip_acc_1=tel.t-online.de
+ccfg_cli set registrar@sip_acc_1=tel.t-online.de
+ccfg_cli set proxy@sip_acc_1=tel.t-online.de
+ccfg_cli set outboundProxy@sip_acc_1=tel.t-online.de
+ccfg_cli set useOutboundProxy@sip_acc_1=0
+ccfg_cli set useDNSSRV@sip_acc_1=1
+ccfg_cli set dtmfTxMethod@sip_acc_1=1
+```
+Activation:
+```
+ccfg_cli set ivr_mode@bootstrap=2
+ccfg_cli set arcor_pinConf@bootstrap=1
+ccfg_cli set arcor_customer@bootstrap=1
+ccfg_cli set keep_in_act@bootstrap=0
+ccfg_cli set FirstUseDate@tr69=2015-05-24T01:07:49
+```
+Save Changes:
+```
+ccfg_cli commitcfg
+```
+10. Run the command `reboot` and enjoy your internet-connection
+
 
 
 
@@ -13,7 +86,7 @@ This is a step by step guide to open your easybox 904 xDSL for the usage with ev
 - EasyBox 904 xDSL
 - computer (with a Linux distribution, a Raspberry Pi is fine or a Live Linux on a thumb drive: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
 - LAN cables
-- FAT32 USB stick
+- FAT32 USB-stick
 - working internet connection
 
 #Step One
@@ -225,3 +298,4 @@ proxy@sip_acc_1 = SIP DOMAIN
 outboundProxy@sip_acc_1 = SIP PROXY
 ```
 
+//////////////Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
