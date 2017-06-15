@@ -14,7 +14,7 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 
 
 1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
-2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick
+2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`.
 3. Start a tftp-server on your computer:
 	Windows: [tftp setup](http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073)
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
@@ -138,7 +138,7 @@ If you never created a ssh-key you need to do it with (you can leave everything 
 ```bash
 ssh-keygen
 ```
-Save an empty file named: "sesame.txt" on the root of your FAT32 formated USB-stick. This file will initialize the ssh access.
+Save an empty file named: "sesame.txt" on the root of your FAT32 formated USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`. This file will initialize the ssh access.
 
 To check if the step one was succesful you should check this list:
 

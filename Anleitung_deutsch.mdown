@@ -4,63 +4,148 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL (Die Firmware der 804 ist per crypto-key gesichert und kann nicht modifiziert werden).
 
+# Schnelle und einfach Installation
 
-# Voraussetzungen:
+## Voraussetzungen:
+- EasyBox 904 xDSL
+- Eine funktionierende Internetverbindung
+- FAT32 formatierter USB-stick
+- Computer und LAN-Kabel
+
+1. Downloade das geöffnete Firmware-Image: [geöffnete Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
+
+2. Speichere eine leere Datei namens `sesame.txt`, nur mit `Notepad++` oder Linux `touch` (nicht mit dem Windows Editor!), auf dem USB-Stick
+
+3. Starte einen tftp-server auf deinem Computer:
+	Windows: [tftp setup](http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073)
+	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
+	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
+
+4. Setze die IP deines Computers manuell auf die `192.168.2.100` und kopiere das geöffnete Firmware-Image in das Transfer-Verzeichnis deines tftp-Servers.
+
+5. Stecke den Strom in die Easybox (ausgeschaltet) und verbinde Sie über den gelben Port mit deinem Computer der den tftp-Server hostet.
+
+6. Halte den Reset-Knopf und schalte die Easybox ein, lasse ihn nach 5 Sekunden los. Ein roter recovery-Bildschirm sollte erscheinen und automatisch das Image downloaden. Danach fordert der BIldschirm zu einem Neustart auf, schalte die Box aus, stecke den USB-Stick ein und starte sie erneut.
+
+7. Setze im Konfigurationsmenü (Browser) ein Administratorpasswort, warte 3 Minuten und schalte die Box wieder aus.
+
+8. Schalte sie ein und warte 6 - 7 Minuten. Verbinde dich nun mit deinem angeschlossenen Computer via `ssh` mit der Easybox. Unter Linux: starte `nano .ssh/config` und füge diesen Code ein:
+```
+Host easy
+	Hostname 192.168.2.1
+	User root
+	KexAlgorithms diffie-hellman-group1-sha1
+```
+Das generiert eine Verknüpfung von `easy` die als Shortcut dient um sich mit der Box zu verbinden.
+Windows-User müssen `cygwin` installieren um eine Linux-artige Umgebung zu bekommen.
+
+9. Starte `ssh easy` und logge dich mit dem Admin-Passwort ein. Nun richte deine Internetverbindung ein:
+
+## ADSL:
+```
+ccfg_cli set username@wan000=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de    //example for Telekom customers, just enter your username provided by your ISP
+ccfg_cli set password@wan000=[Password]
+```
+## VDSL:
+```
+ccfg_cli set username@wan050=[Anschlusskennung][T-Onlinenummer]#0001@t-online.de
+ccfg_cli set password@wan050=[Password]
+ccfg_cli set vlan_id@wan050=7
+```
+## VOIP:
+```
+ccfg_cli set lineEnable@sip_acc_1=1
+ccfg_cli set userId@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set userId_area@sip_acc_1=[AreaCode]
+ccfg_cli set userId_local@sip_acc_1=[PhoneNumber]
+ccfg_cli set account_name@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set displayName@sip_acc_1=[AreaCode][PhoneNumber]
+ccfg_cli set password@sip_acc_1=
+ccfg_cli set useAuthId@sip_acc_1=0
+ccfg_cli set authId@sip_acc_1=
+ccfg_cli set realm@sip_acc_1=tel.t-online.de
+ccfg_cli set sipdomain@sip_acc_1=tel.t-online.de
+ccfg_cli set registrar@sip_acc_1=tel.t-online.de
+ccfg_cli set proxy@sip_acc_1=tel.t-online.de
+ccfg_cli set outboundProxy@sip_acc_1=tel.t-online.de
+ccfg_cli set useOutboundProxy@sip_acc_1=0
+ccfg_cli set useDNSSRV@sip_acc_1=1
+ccfg_cli set dtmfTxMethod@sip_acc_1=1
+```
+## Activation:
+```
+ccfg_cli set ivr_mode@bootstrap=2
+ccfg_cli set arcor_pinConf@bootstrap=1
+ccfg_cli set arcor_customer@bootstrap=1
+ccfg_cli set keep_in_act@bootstrap=0
+ccfg_cli set FirstUseDate@tr69=2015-05-24T01:07:49
+```
+## Save Changes:
+```
+ccfg_cli commitcfg
+```
+
+10. Das Kommando `reboot` startet die Easybox neu.
+
+
+# Manuelle Image-Erstellung (optional)
+
+## Voraussetzungen:
 - EasyBox (904 xDSL)
 - Computer (mit Linux, einfach ein Ubuntu Live Stick erstellen: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
 - LAN Kabel
 - FAT32 formatierter USB Stick
 - funktionierende Internetverbindung
 
-#Schritt 1
+## Schritt 1
 
 Alles in diesem Schritt wird unter Linux im Terminal ausgeführt.
 
 Sämtliche benötigte Software installieren:
-```bash
+```
 sudo aptitude install binwalk unzip gcc g++ liblzma-dev lzma-dev build-essential libtool automake
 ```
 
 Arbeitsverzeichnis erstellen mit:
-```bash
+```
 mkdir easyboxhack
 cd easyboxhack
 ```
 DIe **originale Vodafone Firmware** downloaden:
-```bash
+```
 wget https://www.vodafone.de/downloadarea/fullimage_AT904X-03.17.01.16.zip
 ```
 Das .zip mit folgendem extrahieren:
-```bash
+```
 unzip fullimage_AT904X-03.17.01.16.zip
 ```
 `squashfs` downloaden, ein Programm, dass die Extraktion des Dateisystems der EasyBox erlaubt (oder manuell von der SF-Seite: https://sourceforge.net/projects/squashfs/):
-```bash
+```
 wget https://master.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
 ```
 Das .tar extrahieren:
-```bash
+```
 tar -xzf squashfs4.3.tar.gz
 ```
 Das Makefile verändern, damit squashfs LZMA extrahieren kann:
-```bash
+```
 cd squashfs4.3/squashfs-tools
 nano Makefile
 ```
 Zur Zeile mit "LZMA_XZ_SUPPORT = 1" scrollen und die `#` am Anfang löschen (nano beenden mit ctrl + x). Danach mit `make` squashfs kompilieren.
-```bash
+```
 make
 ```
 Wenn der Compiler erfolgreich war, squashfs installieren mit:
-```bash
+```
 sudo make install
 ```
 Auf einem Live-Linux oder wenn du noch nie eine SSH-Verbindung verwendet hast, musst du SSH-Schlüssel erstellen:
-```bash
+```
 ssh-keygen
 ```
 
-Jetzt eine leere Datei auf dem USB-Stick erstellen, mit dem Namen "sesame.txt". Es sollte sich nichts anderes auf dem Stick befinden.
+Jetzt eine leere Datei auf dem USB-Stick erstellen, mit dem Namen "sesame.txt". Es sollte sich nichts anderes auf dem Stick befinden (mit `Notepad++` oder Linux `touch`, niemals den Windows Editor verwenden!)
 
 Noch einmal die Zusammenfassung um Schritt 1 zu überprüfen:
 
@@ -71,16 +156,16 @@ Noch einmal die Zusammenfassung um Schritt 1 zu überprüfen:
 
 Wenn irgendwas davon nicht wie erwartet funktioniert, bitte hier einfach bei GitHub ein Issue aufmachen.
 
-#Schritt 2
+## Schritt 2
 
 Nachdem alles vorbereitet wurde, wird jetzt die Firmware analysiert, dass Dateisystem extrahiert und der ssh-key hinzugefügt.
 
 Im `easyboxhack` Verzeichnis folgendes eingeben:
-```bash
+```
 binwalk fullimage_AT904X-03.17.01.16.bin
 ```
 Der Output sollte so aussehen:
-```bash
+```
 binwalk fullimage_AT904X-03.17.01.16.bin
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
@@ -95,17 +180,17 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 Man kann das Squashfs nach dem 64ten Bit sofort erkennen. Wir müssen jetzt mit `dd` das Image in 3 Teile zerlegen. Die ersten 64 Bit, dass squashfs und der Rest.
 
 Das machen wir mit:
-```bash
+```
 dd if=fullimage_AT904X-03.17.01.16.bin of=first.part count=64 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=second.part skip=64 count=22192579 bs=1
 dd if=fullimage_AT904X-03.17.01.16.bin of=third.part skip=22192643 bs=1
 ```
 Der zweite Part (second.part) enthält das squashfs. Nun extrahieren wir das Filesystem:
-```bash
+```
 unsquashfs second.part
 ```
 Das erstellt das Verzeichnis `squashfs-root`. Nun wechseln wir mit: `cd squashfs-root` hinein. Dann starten wir wieder nano: `nano etc/init.d/rcS` and fügen folgendes am Ende der Datei ein:
-```bash
+```
 stty -F /dev/ttyS0 115200
 enable_console.sh
 (cd /tmp; nohup sh -c "sleep 200; exec dropbear" & )
@@ -113,7 +198,7 @@ enable_console.sh
 Das stellt sicher, dass der ssh-Server immer läuft.
 Nun fügen wir unseren ssh-key hinzu.
 Dazu müssen wir zuerst das config Verzeichnis entpacken:
-```bash
+```
 tar -xzf etc/dftconfig.tgz
 ```
 Nun öffnen wir ein zweites Terminal (ctrl + shift + n) und führen aus:
@@ -123,11 +208,11 @@ cat ~/.ssh/id_rsa.pub
 Den ausgegebenen ssh-key kopieren und dieses Terminal Fenster schließen.
 
 Zurück im anderen Terminal fügen wir den ssh-key am Ende folgender Datei ein (ctrl + x zum beenden von nano):
-```bash
+```
 nano config/cert/authorized_keys
 ```
 Nun müssen wir das config Verzeichnis wieder packen, das alte gepackte und das entpackte löschen und das neue in die richtige Position kopieren, mit:
-```bash
+```
 rm etc/dftconfig.tgz
 tar -zcvf dftconfig.tgz config
 mv dftconfig.tgz etc/
@@ -142,42 +227,42 @@ Der neue Part zwei wird kleiner sein als der alte, deshalb müssen wir ihn küns
 ```bash
 ls -la sec*
 ```
-Das oben stehende Befehl listet die beiden second.parts auf. In der dritten Spalte steht die Größe in Bit. Nun einfach die Differenz bilden. Bei mit war der alte 22192579 bits und der neue ~22052864, macht eine Differenz von 139715 bits. Genau mit der Größe erstellen wir den Lückenfüller:
-```bash
+Das oben stehende Befehl listet die beiden second.parts auf. In der dritten Spalte steht die Größe in Bit. Nun einfach die Differenz bilden. Bei mir war der alte 22192579 bits und der neue ~22052864, macht eine Differenz von 139715 bits. Genau mit der Größe erstellen wir den Lückenfüller:
+```
 dd bs=1 count=139715 if=/dev/zero of=padding
 ```
 Nun erstellen wir das komplette Firmware-image mit dem neuen Part zwei:
-```bash
+```
 cat first.part second.part.new padding third.part > fullimage.img
 ```
 
 fullimage.img sollte jetzt genauso groß sein wie die originale firmware (`ls -la`).
 
 
-#Schritt 3
+## Schritt 3
 
 Um die neue Firmware auf die EasyBox zu bekommen benötigen wir einen tftp-Server.
 
 Dazu einfach die EasyBox nehmen, ausschalten, den USB Stick mit sesame.txt anstecken (und dran lassen), und beim Anschalten den Reset-Knopf, ca. 10 Sekunden lang drücken. Ein roter Bildschirm erscheint mit Anweisungen zur Wiederherstellung.
 
 Jetzt installieren wir den tftp-Server mit:
-````bash
+```
 sudo apt-get install tftpd-hpa
 ```
 Jetzt werdet ihr nach einem Pfad gefragt, lasst ihn einfach auf Standard. Wir müssen noch die Konfiguration ändern mit `nano /etc/default/tftpd-hpa`:
-````bash
+```
 TFTP_USERNAME="tftp"
 TFTP_DIRECTORY="/srv/tftp"
 TFTP_ADDRESS="192.168.2.100:69"
 TFTP_OPTIONS="--secure"
 ```
 Jetzt das Firmware image entsprechend kopieren:
-```bash
+```
 sudo cp fullimage.img /srv/tftp
 ```
 
 Noch den Server neustarten:
-```bash
+```
 sudo service tftpd-hpa restart
 ```
 Jetzt den Linux-Rechner per LAN mit der EasyBox verbinden. Sie sollte anfangen das image zu downloaden. Wenn nicht schaltet sie aus und drück nochmal reset.
@@ -185,12 +270,12 @@ Jetzt den Linux-Rechner per LAN mit der EasyBox verbinden. Sie sollte anfangen d
 Wenn die EasyBox fertig ist, solltet ihr sie neustarten und die Einrichtung, bis auf das Kennwort, überspringen.
 
 Jetzt wieder auf dem Linux Rechner im Terminal:
-```bash
+```
 nano .ssh/config
 ```
 
 Folgendes einfügen:
-```bash
+```
 Host easy
 	Hostname 192.168.2.1
 	User root
@@ -198,7 +283,7 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 Nachdem ihr nano beendet habt, jetzt folgendes eingeben:
-````bash
+```
 ssh easy
 ```
 Jetzt werdet ihr nach dem Admin Passwort gefragt, einfach eingeben (es wird nichts angezeigt bei der Passwort eingabe).
@@ -216,37 +301,5 @@ vr9 FW for VOX 2.0
 root@easy:~#
 ```
 
-Jetzt können wir eure Logindetails vom neuen Provider eingeben:
-```bash
-/usr/sbin/ccfg_cli set username@wan000=DEIN_BENUTZER
-/usr/sbin/ccfg_cli set username@wan001=DEIN_BENUTZER
-/usr/sbin/ccfg_cli set password@wan000=DEIN_PASSWORT
-/usr/sbin/ccfg_cli set password@wan001=DEIN_PASSWORT
-/usr/sbin/ccfg_cli commitcfg
-```
-Jetzt `reboot` eingeben um sie neuzustarten. Ihr solltet jetzt eine funktionierende Internetverbindung haben.
-
-
-#VoIP Konfiguration (Festnetz übers Internet)
-
-
-Das erstmal studieren: https://www.telekom.de/hilfe/festnetz-internet-tv/ip-basierter-anschluss/einstellungen-fuer-die-ip-telefonie-mit-anderen-clients?samChecked=true
-
-Nachdem per ssh mit `ssh easy` die Verbindung zur EasyBox hergestellt wurde, folgende Konfigurationen ändern (wie oben auch schon):
-```
-lineEnable@sip_acc_1 = 1
-userId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE without whitespace etc.(Vorwahl)
-userId_area@sip_acc_1 = AREA CODE
-userId_local@sip_acc_1 = USER ID / USERNAME
-account_name@sip_acc_1 =
-displayName@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
-password@sip_acc_1 = SIP PASSWORD
-useAuthId@sip_acc_1 = 1
-authId@sip_acc_1 = YOUR TELEPHONE NUMBER WITH AREA CODE (Vorwahl)
-realm@sip_acc_1 = SIP DOMAIN
-sipdomain@sip_acc_1 = SIP DOMAIN
-registrar@sip_acc_1 = SIP DOMAIN
-proxy@sip_acc_1 = SIP DOMAIN
-outboundProxy@sip_acc_1 = SIP PROXY
-```
-
+Jetzt können wir eure Logindetails vom neuen Provider eingeben.
+Dazu bitte ganz nach oben und Schritt 9. des "Schnell und einfach" Guides angucken.
