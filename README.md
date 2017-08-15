@@ -4,6 +4,8 @@ This is a step by step guide to open your easybox 904 xDSL for the usage with ev
 This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: [Quallenauges openWRT-fork](https://github.com/Quallenauge/Easybox-904-XDSL)
  and [openWRT-forum](https://forum.openwrt.org/viewtopic.php?id=44676).
 
+# Don't do anything of it with Windows!!! You will softbrick your EB
+
 # Fast and easy installation
 
 ## Prerequisites:
@@ -16,7 +18,6 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
 2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`.
 3. Start a tftp-server on your computer:
-	Windows: [tftp setup](http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073)
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
 4. Set the IP of your computer to: 192.168.2.100 and copy the downloaded firmware image to the transfer directory of your tftp-server

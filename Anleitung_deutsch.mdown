@@ -4,6 +4,8 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL (Die Firmware der 804 ist per crypto-key gesichert und kann nicht modifiziert werden).
 
+# Bitte nichts davon unter Windows machen!!! Ihr lauft Gefahr eure Box zu bricken (soft).
+
 # Schnelle und einfach Installation
 
 ## Voraussetzungen:
@@ -17,7 +19,6 @@ Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen kön
 2. Speichere eine leere Datei namens `sesame.txt`, nur mit `Notepad++` oder Linux `touch` (nicht mit dem Windows Editor!), auf dem USB-Stick
 
 3. Starte einen tftp-server auf deinem Computer:
-	Windows: [tftp setup](http://www.tecchannel.de/a/kostenloser-tftp-server-zur-dateiuebertragung,2030073)
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
 
