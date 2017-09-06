@@ -272,4 +272,4 @@ Now we can add your DSL login credentials which you got from your provider.
 See in the fast and easy guide.
 
 
-// Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
+// Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the efforts!
