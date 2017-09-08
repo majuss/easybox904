@@ -4,7 +4,7 @@ This is a step by step guide to open your easybox 904 xDSL for the usage with ev
 This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: [Quallenauges openWRT-fork](https://github.com/Quallenauge/Easybox-904-XDSL)
  and [openWRT-forum](https://forum.openwrt.org/viewtopic.php?id=44676).
 
-# Don't do anything of it with Windows!!! You will softbrick your EB
+# Debricking guide is now online (remove bootloop etc.)
 
 # Fast and easy installation
 
