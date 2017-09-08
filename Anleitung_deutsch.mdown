@@ -4,7 +4,7 @@
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL (Die Firmware der 804 ist per crypto-key gesichert und kann nicht modifiziert werden).
 
-# Debricking guide ist jetzt online (bootloop beheben etc.)
+# [Debricking guide ist jetzt online (bootloop beheben etc.)](https://github.com/majuss/easybox904/blob/master/debricking.md)
 
 # Schnelle und einfach Installation
 
@@ -38,7 +38,6 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 Das generiert eine Verknüpfung von `easy` die als Shortcut dient um sich mit der Box zu verbinden.
-Windows-User müssen `cygwin` installieren um eine Linux-artige Umgebung zu bekommen.
 
 9. Starte `ssh easy` und logge dich mit dem Admin-Passwort ein. Nun richte deine Internetverbindung ein:
 

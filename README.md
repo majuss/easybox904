@@ -4,7 +4,7 @@ This is a step by step guide to open your easybox 904 xDSL for the usage with ev
 This Guide is only for the manual configuration of the Easybox, if you want to turn your Easybox into an IoT-device see these two links: [Quallenauges openWRT-fork](https://github.com/Quallenauge/Easybox-904-XDSL)
  and [openWRT-forum](https://forum.openwrt.org/viewtopic.php?id=44676).
 
-# Debricking guide is now online (remove bootloop etc.)
+# [Debricking guide is now online (remove bootloop etc.)](https://github.com/majuss/easybox904/blob/master/debricking.md)
 
 # Fast and easy installation
 
@@ -12,8 +12,7 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 - EasyBox 904 xDSL
 - Working internet connection
 - FAT32 formatted USB-stick
-- Computer and LAN cable
-
+- Computer with Debian installed (or live stick) and LAN cable
 
 1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
 2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`.
@@ -22,9 +21,9 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
 4. Set the IP of your computer to: 192.168.2.100 and copy the downloaded firmware image to the transfer directory of your tftp-server
 5. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
-6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USb-stick.
+6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USB-stick.
 7. Turn on the Box and change the admin password. Pull out the USB-stick and turn off the Box.
-8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this (Windows users please googel how to setup cygwin and ssh):
+8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this:
 ```
 Host easy
 	Hostname 192.168.2.1
