@@ -186,6 +186,7 @@ This creates the directory `squashfs-root`. cd into it with `cd squashfs-root`. 
 stty -F /dev/ttyS0 115200
 enable_console.sh
 (cd /tmp; nohup sh -c "sleep 200; exec dropbear" & )
+(cd /tmp; nohup sh -c "sleep 800; killall dropbear" & )
 ```
 This ensure that dropbear, the ssh server, is always running.
 Now to add your ssh key first untar the config directory with:
@@ -270,4 +271,4 @@ Now we can add your DSL login credentials which you got from your provider.
 See in the fast and easy guide.
 
 
-// Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
+// Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the efforts!
