@@ -12,7 +12,7 @@ Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen kön
 - EasyBox 904 xDSL
 - Eine funktionierende Internetverbindung
 - FAT32 formatierter USB-stick
-- Computer und LAN-Kabel
+- Computer auf dem Debian läuft (oder live-stick) und LAN-Kabel
 
 1. Downloade das geöffnete Firmware-Image: [geöffnete Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
 
@@ -22,13 +22,13 @@ Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen kön
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
 
-4. Setze die IP deines Computers manuell auf die `192.168.2.100` und kopiere das geöffnete Firmware-Image in das Transfer-Verzeichnis deines tftp-Servers.
+4. Deaktiviere den newtwork-manager deines Betriebssystems, damit er nicht versucht die IP manuell zu setzen: `sudo stop network-manager` danach setze sie mit: `sudo ifconfig eth0 192.168.2.100 netmask 255.255.255.0`. Kopiere das geöffnete Firmware-Image in das Transfer-Verzeichnis deines tftp-Servers.
 
 5. Stecke den Strom in die Easybox (ausgeschaltet) und verbinde Sie über den gelben Port mit deinem Computer der den tftp-Server hostet.
 
 6. Halte den Reset-Knopf und schalte die Easybox ein, lasse ihn nach 5 Sekunden los. Ein roter recovery-Bildschirm sollte erscheinen und automatisch das Image downloaden. Danach fordert der BIldschirm zu einem Neustart auf, schalte die Box aus, stecke den USB-Stick ein und starte sie erneut.
 
-7. Setze im Konfigurationsmenü (Browser) ein Administratorpasswort, warte 3 Minuten und schalte die Box wieder aus.
+7. Setze im Konfigurationsmenü (Browser) ein Administratorpasswort, warte 3 Minuten und schalte die Box wieder aus und ziehe den USB stick ab.
 
 8. Schalte sie ein und warte 6 - 7 Minuten. Verbinde dich nun mit deinem angeschlossenen Computer via `ssh` mit der Easybox. Unter Linux: starte `nano .ssh/config` und füge diesen Code ein:
 ```
@@ -38,6 +38,7 @@ Host easy
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
 Das generiert eine Verknüpfung von `easy` die als Shortcut dient um sich mit der Box zu verbinden.
+Wenn du "permission denied" zurück bekommst, stecke den USB stick an, schalte die Box aus, starte sie erneut, warte 10 Minuten, schalte die Box aus, ziehe den stick heraus und starte die Box erneut.
 
 9. Starte `ssh easy` und logge dich mit dem Admin-Passwort ein. Nun richte deine Internetverbindung ein:
 

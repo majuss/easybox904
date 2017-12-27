@@ -19,7 +19,7 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 3. Start a tftp-server on your computer:
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
-4. Set the IP of your computer to: 192.168.2.100 and copy the downloaded firmware image to the transfer directory of your tftp-server
+4. Disable your network manager with `sudo stop network-manager` so it will not set the IP automatically. Set the IP of your computer to: 192.168.2.100 with `sudo ifconfig eth0 192.168.2.100 netmask 255.255.255.0` and copy the downloaded firmware image to the transfer directory of your tftp-server
 5. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
 6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USB-stick.
 7. Turn on the Box and change the admin password. Pull out the USB-stick and turn off the Box.
@@ -30,7 +30,7 @@ Host easy
 	User root
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
-This will create a shortcut to connect to the Easybox.
+This will create a shortcut to connect to the Easybox. If you run into "permission denied" the sesame.txt was not recognized correctly. Stick the USB drive into the EB, turn it off and then turn it on again. Wait 10 minutes, turn it off, pull the stick and start it.
 
 9. Run `ssh easy` and login. Now enter these commands according to your internet-connection:
 
