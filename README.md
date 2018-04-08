@@ -79,8 +79,7 @@ ccfg_cli commitcfg
 ```
 10. Run the command `reboot` and enjoy your internet-connection
 
-
-
+---
 
 # Manual installation and own image creation (optional)
 
@@ -126,7 +125,7 @@ Alter the Makefile of squashfs to include LZMA support:
 cd squashfs4.3/squashfs-tools
 nano Makefile
 ```
-Scroll to the line with "LZMA_XZ_SUPPORT = 1" and delete the `#`on the beginning to uncomment it. Then compile squashfs with:
+Scroll to the line with "LZMA_XZ_SUPPORT = 1" and delete the `#`on the beginning to uncomment it. Exit nano with `ctrl + x` Then compile squashfs with:
 ```bash
 make
 ```
@@ -138,14 +137,12 @@ If you never created a ssh-key you need to do it with (you can leave everything 
 ```bash
 ssh-keygen
 ```
-Save an empty file named: "sesame.txt" on the root of your FAT32 formated USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`. This file will initialize the ssh access.
 
 To check if the step one was succesful you should check this list:
 
 + Type `unsquashfs` a list of options should be displayed.
 + Type `binwalk` a list of option should be displayed.
 + Check if there is a file named "fullimage_AT904X-03.17.01.16.bin" in your easyboxhack directory.
-+ There should be a empty file on your thumb drive named "sesame.txt". Now put it aside we will need it later.
 
 
 ## Step two
@@ -181,35 +178,11 @@ The second part contains the squashfs. We need to extract the filesystem inside 
 ```bash
 unsquashfs second.part
 ```
-This creates the directory `squashfs-root`. cd into it with `cd squashfs-root`. Then run `nano` on `etc/init.d/rcS` and append the following lines on the bottom:
-```bash
-stty -F /dev/ttyS0 115200
-enable_console.sh
-(cd /tmp; nohup sh -c "sleep 200; exec dropbear" & )
-```
-This ensure that dropbear, the ssh server, is always running.
-Now to add your ssh key first untar the config directory with:
-```bash
-tar -xzf etc/dftconfig.tgz
-```
-Now open a second terminal where you run:
-```bash
-cat ~/.ssh/id_rsa.pub
-```
-and copy the outputted ssh key.
+This creates the directory `squashfs-root`. cd into it with `cd squashfs-root`. 
 
-Back in the squashfs-root run and paste your key at the end:
-```bash
-nano config/cert/authorized_keys
-```
-Now compress the config, delete the old package, copy the new and delete the extracted config directory.
-```bash
-tar -zcvf dftconfig.tgz config
-rm -rf etc/dftconfig.tgz
-cp dftconfig.tgz etc/
-rm -rf config
-```
-After that we will repack the squshfs:
+Then delete the dropbear init-service with: `rm etc/init.d/dropbear`. And run `nano` on `etc/init.d/dropbear` now copy everything from: and paste it into nano. ctrl + x to save and exit.
+
+
 ```bash
 cd ..
 mksquashfs  squashfs-root  second.part.new  -comp lzma  -b 131072  -no-xattrs  -all-root
