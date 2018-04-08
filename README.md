@@ -11,28 +11,25 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 ## Prerequisites:
 - EasyBox 904 xDSL
 - Working internet connection
-- FAT32 formatted USB-stick
 - Computer with Debian installed (or live stick) and LAN cable
 
 1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
-2. Prepare a FAT32 formatted USB-stick and save an empty file called 'sesame.txt' to the root of the USB-stick. Don't save it with the `Windows Editor` (this won't result in an empty file..) use `Notepad++` or Linux' `touch`.
-3. Start a tftp-server on your computer:
+2. Start a tftp-server on your computer:
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
-4. Disable your network manager with `sudo stop network-manager` so it will not set the IP automatically. Set the IP of your computer to: 192.168.2.100 with `sudo ifconfig eth0 192.168.2.100 netmask 255.255.255.0` and copy the downloaded firmware image to the transfer directory of your tftp-server
-5. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
-6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box. Turn it off and connect the USB-stick.
-7. Turn on the Box and change the admin password. Pull out the USB-stick and turn off the Box.
-8. Turn the Box on and connect via `ssh` to the Box. Run `nano .ssh/config` and paste this:
+3. Disable your network manager with `sudo stop network-manager` so it will not set the IP automatically. Set the IP of your computer to: 192.168.2.100 with `sudo ifconfig eth0 192.168.2.100 netmask 255.255.255.0` and copy the downloaded firmware image to the transfer directory of your tftp-server
+4. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
+6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box, do it.
+7. Run `nano .ssh/config` in a terminal and paste this:
 ```
 Host easy
 	Hostname 192.168.2.1
 	User root
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
-This will create a shortcut to connect to the Easybox. If you run into "permission denied" the sesame.txt was not recognized correctly. Stick the USB drive into the EB, turn it off and then turn it on again. Wait 10 minutes, turn it off, pull the stick and start it.
+This will create a shortcut to connect to the Easybox. 
 
-9. Run `ssh easy` and login. Now enter these commands according to your internet-connection:
+8. Run `ssh easy` and login with the default password: `123456`. Change your root password with the command `passwd root`. Now enter these commands according to your internet-connection:
 
 ## ADSL:
 ```
@@ -77,7 +74,7 @@ ccfg_cli set FirstUseDate@tr69=2015-05-24T01:07:49
 ```
 ccfg_cli commitcfg
 ```
-10. Run the command `reboot` and enjoy your internet-connection
+9. Run the command `reboot` and enjoy your internet-connection
 
 ---
 
@@ -87,7 +84,6 @@ ccfg_cli commitcfg
 - EasyBox 904 xDSL
 - computer (with a Linux distribution, a Raspberry Pi is fine or a Live Linux on a thumb drive: https://www.ubuntu.com/download/desktop/create-a-usb-stick-on-windows)
 - LAN cables
-- FAT32 USB-stick
 - working internet connection
 
 ## Step One
@@ -180,9 +176,7 @@ unsquashfs second.part
 ```
 This creates the directory `squashfs-root`. cd into it with `cd squashfs-root`. 
 
-Then delete the dropbear init-service with: `rm etc/init.d/dropbear`. And run `nano` on `etc/init.d/dropbear` now copy everything from: and paste it into nano. ctrl + x to save and exit.
-
-
+Then delete the dropbear init-service with: `rm etc/init.d/dropbear`. And run `nano` on `etc/init.d/dropbear` now copy everything from: this [dropbear-file](https://raw.githubusercontent.com/majuss/easybox904/master/dropbear.txt) and paste it into nano. ctrl + x to save and exit and continue with the following commands.
 ```bash
 cd ..
 mksquashfs  squashfs-root  second.part.new  -comp lzma  -b 131072  -no-xattrs  -all-root
@@ -211,8 +205,7 @@ Grep your easybox and start it and immedeatly press the reset button for about 1
 Now setup the tftp server. You can find a guide for Ubuntu/Debian here: https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/.
 Copy the fullimage.bin into the tftp root directory and set the TFTP_ADDRESS to 192.168.2.100.
 
-Now connect the computer running the tftp server to the easybox. The easybox should now download and flash the firmware. Check the display and shutdown the easybox. Stick your USB thumb drive into the easybox and start it.
-Now you should skip the setup process on the easybox and restart it again after setting a login password.
+Now connect the computer running the tftp server to the easybox. The easybox should now download and flash the firmware. Check the display and shutdown the easybox. Now start it again and run the following commands in your terminal:
 
 Run:
 ```bash
@@ -225,7 +218,7 @@ Host easy
 	User root
 	KexAlgorithms diffie-hellman-group1-sha1
 ```
-When you now type `ssh easy` the computer will ask for your easybox-admin password. If the connection was successful you will see:
+When you now type `ssh easy` the computer will ask for your easybox-admin password, it is by default `123456`. If the connection was successful you will see:
 ```
 ssh easy
 root@192.168.2.1's password:
@@ -238,7 +231,7 @@ vr9 FW for VOX 2.0
 root@easy:~#
 ```
 
-Now we can add your DSL login credentials which you got from your provider.
+Now you should change the password with: `passwd root`. After that we can add your DSL login credentials which you got from your provider.
 
 See in the fast and easy guide.
 
