@@ -1,4 +1,4 @@
-#Benutze deine EasyBox mit jedem Provider -- Ohne MIC!
+# Benutze deine EasyBox mit jedem Provider -- Ohne MIC!
 
 # Open your EasyBox 904 xDSL for every provider --- Without MIC (Modem Installation Code)
 Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen könnt, um Sie mit jedem Provider und ohne MIC zu verwenden. Offiziell funktioniert nur die 904 xDSL (Die Firmware der 804 ist per crypto-key gesichert und kann nicht modifiziert werden).
