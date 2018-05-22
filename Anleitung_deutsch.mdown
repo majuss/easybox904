@@ -24,9 +24,7 @@ Dieser Guide beschreibt, wie ihr eine ssh-Verbindung zur EasyBox herstellen kön
 
 5. Halte den Reset-Knopf und schalte die Easybox ein, lasse ihn nach 5 Sekunden los. Ein roter recovery-Bildschirm sollte erscheinen und automatisch das Image downloaden. Danach fordert der BIldschirm zu einem Neustart auf, schalte die Box aus und wieder ein.
 
-6. Setze im Konfigurationsmenü (Browser) ein Administratorpasswort und schalte die Box wieder aus und ein.
-
-7. Verbinde dich nun mit deinem angeschlossenen Computer via `ssh` mit der Easybox. Unter Linux: starte `nano .ssh/config` und füge diesen Code ein:
+6. Verbinde dich nun mit deinem angeschlossenen Computer via `ssh` mit der Easybox. Unter Linux: starte `nano .ssh/config` und füge diesen Code ein:
 ```
 Host easy
 	Hostname 192.168.2.1
@@ -35,7 +33,7 @@ Host easy
 ```
 Das generiert eine Verknüpfung von `easy` die als Shortcut dient um sich mit der Box zu verbinden.
 
-8. Starte `ssh easy` und logge dich mit dem default Admin-Passwort `123456` ein. Ändere dein Root Passwort mit: `passwd root`. Nun richte deine Internetverbindung ein:
+7. Starte `ssh easy` und logge dich mit dem default Admin-Passwort `123456` ein. Ändere dein Root Passwort mit: `passwd root`. Nun richte deine Internetverbindung ein:
 
 ## ADSL:
 ```
@@ -81,7 +79,7 @@ ccfg_cli set FirstUseDate@tr69=2015-05-24T01:07:49
 ccfg_cli commitcfg
 ```
 
-9. Das Kommando `reboot` startet die Easybox neu.
+8. Das Kommando `reboot` startet die Easybox neu.
 
 ---
 
