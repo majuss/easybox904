@@ -11,13 +11,13 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 ## Prerequisites:
 - EasyBox 904 xDSL
 - Working internet connection
-- Computer with Debian installed (or live stick) and LAN cable
+- Computer with Ubuntu installed or [live stick](https://tutorials.ubuntu.com/tutorial/tutorial-create-a-usb-stick-on-windows#0) and LAN cable. If you're experienced with Windows, look at the [Linux-Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
 1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage.img)
 2. Start a tftp-server on your computer:
 	Linux: [tftp setup](https://www.cyberciti.biz/faq/install-configure-tftp-server-ubuntu-debian-howto/)
 	Mac: [tftp setup](https://rick.cogley.info/post/run-a-tftp-server-on-mac-osx/)
-3. Disable your network manager with `sudo stop network-manager` so it will not set the IP automatically. Set the IP of your computer to: 192.168.2.100 with `sudo ifconfig eth0 192.168.2.100 netmask 255.255.255.0` and copy the downloaded firmware image to the transfer directory of your tftp-server
+3. Check your current network configuration with: `ifconfig` and get the ID of your LAN-port. Disable your network manager with `sudo stop network-manager` (if installed) so it will not set the IP automatically. Disable all other Network sources, like WLAN. Set the IP of your computer to: 192.168.2.100 with `sudo ifconfig ENTER_YOUR_LAN_ID 192.168.2.100 netmask 255.255.255.0` and copy the downloaded firmware image to the transfer directory of your tftp-server
 4. Plug in the power of the Easybox and connect it via a yellow port with a LAN cable with your computer which is running the tftp server
 6. Hold the reset-button of the Easybox and turn it on, release it after 5 seconds. A red rescue screen should appear and the Box should automatically download the image. The screen will prompt you to restart the Box, do it.
 7. Run `nano .ssh/config` in a terminal and paste this:
@@ -29,7 +29,7 @@ Host easy
 ```
 This will create a shortcut to connect to the Easybox. 
 
-8. Run `ssh easy` and login with the default password: `123456`. Change your root password with the command `passwd root`. Now enter these commands according to your internet-connection:
+8. Run `ssh easy` and login with the default password: `123456` (if the above `nano` command failed, run: `ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 root@192.168.2.1`). Change your root password with the command `passwd root`. Now enter these commands according to your internet-connection:
 
 ## ADSL:
 ```
@@ -235,5 +235,15 @@ Now you should change the password with: `passwd root`. After that we can add yo
 
 See in the fast and easy guide.
 
+## Tips
+
+Get the complete config:
+```
+ccfg_cli showcfg
+```
+Read a specific configuration entry:
+```
+ccfg_cli get xxx
+```
 
 // Huge portions of this guide were taken from the openwrt forum. Please thank these guys for the affords!
