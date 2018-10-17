@@ -11,7 +11,7 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 ----------------------
 
 
-OpenWrt is now working and is the preferred operating system since it's more stable and easier to use (after setup)! The guide will get uploaded in the next days!
+# OpenWrt is now working and is the preferred operating system since it's more stable and easier to use (after setup)! The guide will get uploaded in the next days!
 
 
 ----------------------
