@@ -6,16 +6,6 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 
 # [Debricking guide is now online (remove bootloop etc.)](https://github.com/majuss/easybox904/blob/master/debricking.md)
 
-
-
-----------------------
-
-
-# OpenWrt is now working and is the preferred operating system since it's more stable and easier to use (after setup)! The guide will get uploaded in the next days!
-
-
-----------------------
-
 # Fast and easy installation
 
 ## Prerequisites:
