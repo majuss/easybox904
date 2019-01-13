@@ -1,13 +1,9 @@
 # Step by step guide for openWrt installation
 
-
-
 ### Prerequisities:
 - Computer with LAN port
 - working Internet connection (for example via mobile)
 - If you don't have a Linux computer an USB-stick (at least 8 GB)
-
-
 
 If you already have a computer with Linux and a working internet connection with it, jump to step 4.
 
@@ -21,7 +17,7 @@ If you already have a computer with Linux and a working internet connection with
 8. After the tools were successfully build keep the terminal open and go to your browser. Visit the website: `https://ftp.avm.de/fritzbox/fritzbox-7490/deutschland/fritz.os/`in a browser and copy the download link of the latest image file. Now go back to the terminal and enter: `wget ` and paste the download link (mind the `space` between command and URL) and hit enter.
 9. We now extract the download image with multiple tools. First of all with `7zip`: `7z e Downloads/FRITZ.Box_7490.*.image -r filesystem.image` and once again: `7z e filesystem.image filesystem_core.squashfs`. Now we are using the unsquash utility from freetz: `tools/unsquashfs4-avm-be filesystem_core.squashfs -e lib/modules/dsp_vr9/`. You can now find the modem-firmware in `squashfs-root/lib/modules/dsp_vr9`. We only need to patch it with: `cd squashfs-root/lib/modules/dsp_vr9/` then: `bspatch vr9-B-dsl.bin vr9-A-dsl.bin vr9-A-dsl.bin.bsdiff` and `bspatch vr9-B-dsl.bin release-vr9-B-dsl.bin release-vr9-B-dsl.bin.bsdiff`. Congratulations, the hard part is done.
 10. Now we can flash the OpenWrt starter-image to the EasyBox. Download the latest starter-image (fullimage) from [here](https://app.box.com/s/tjeobifjb8ohj90m5k2u7g1efgq8308y)
-11. Also download the most recent firmware image from: 
+11. Also download the most recent firmware image from [here](https://github.com/majuss/easybox904/blob/master/openwrt-sysupgrade.bin).
 12. Now pull your LAN cable from your linux machine and disable WIFI. Click the grid icon in the bottom left corner of your desktop and enter `settings` to open the system settings. Then in the network tab click the gear icon behind your `eno1` interface. Then go to IPV4 and choose manual. Enter `192.168.2.100` as IP and `255.255.255.0` as netmask, leave everything else blank. Turn the interface off and on to reload the settings.
 13. Now run: `sudo cp Downloads/fullimage.img /var/lib/tftboot` in a new Terminal window to copy the firmware image to the tftp-directory (close the old one).
 14. Connect your EasyBox (yellow port) with your PC with a LAN cable. Turn the box on while pressing the reset button. Release the button after 5 seconds. You now should see the red recovery screen. When it states that rescue process is complete, turn it off and on.
