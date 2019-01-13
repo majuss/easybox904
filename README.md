@@ -6,6 +6,20 @@ This Guide is only for the manual configuration of the Easybox, if you want to t
 
 # [Debricking guide is now online (remove bootloop etc.)](https://github.com/majuss/easybox904/blob/master/debricking.md)
 
+<<<<<<< HEAD
+# [openWrt guide is now online, for the use with every ISP (without SIP)](https://github.com/majuss/easybox904/blob/master/openwrt.md)
+=======
+
+
+----------------------
+
+
+# OpenWrt is now working and is the preferred operating system since it's more stable and easier to use (after setup)! The guide will get uploaded in the next days!
+
+
+----------------------
+>>>>>>> f82f8b371b9c867d9b46519d649443be2bdb1ed7
+
 # Fast and easy installation
 
 ## Prerequisites:
@@ -102,7 +116,7 @@ cd easyboxhack
 ```
 Download the **original firmware image** from vodafone:
 ```bash
-wget https://www.vodafone.de/downloadarea/fullimage_AT904X-03.17.01.16.zip
+wget https://www.vodafone.de/downloadarea/fullimage_AT904X-03.17.01.17.zip
 ```
 Then extract the zip with:
 ```bash
@@ -147,7 +161,7 @@ After setting up everything we will analyse the firmware image and extract the f
 
 Inside of your `easyboxhack` directory type:
 ```bash
-binwalk fullimage_AT904X-03.17.01.16.bin
+binwalk fullimage_AT904X-03.17.01.17.signed
 ```
 The output should look like this:
 ```bash
@@ -185,10 +199,10 @@ The new second.part (squashfs) will be smaller than the old one. We need to add 
 ```bash
 ls -la sec*
 ```
-Now read the size in the third column. The old second.part should be 22192579 bits and the new something around 22052864. Now calculate the difference. In this case 139715 bit. Now create the padding with this size:
+Now read the size in the third column. The old second.part should be 22192579 bits and the new something around 22056960. Now calculate the difference. In this case 135619 bit. Now create the padding with this size:
 
 ```bash
-dd bs=1 count=139715 if=/dev/zero of=padding
+dd bs=1 count=135619 if=/dev/zero of=padding
 ```
 Now we are gonna create the new binary image:
 ```bash
