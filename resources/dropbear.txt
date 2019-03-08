@@ -1,0 +1,140 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2010 OpenWrt.org
+# Copyright (C) 2006 Carlos Sobrinho
+
+NAME=dropbear
+PROG=/usr/sbin/dropbear
+START=50
+STOP=50
+PIDCOUNT=0
+EXTRA_COMMANDS="killclients hotplug_start"
+EXTRA_HELP="	killclients Kill ${NAME} processes except servers and yourself"
+EXTRA_HELP=<<EOF
+        killclients Kill ${NAME} processes except servers and yourself
+        usb hotplug trigger hotplug_start
+EOF
+
+dropbear_start()
+{
+	local section="$1"
+
+	local enabled
+	config_get_bool enabled "${section}" enable 1
+	[ "${enabled}" -eq 0 ] && return 1
+
+	local verbosed
+	config_get_bool verbosed "${section}" verbose 0
+
+	PIDCOUNT="$(( ${PIDCOUNT} + 1))"
+
+	# local nopasswd
+	# local passauth
+	# config_get_bool passauth "${section}" PasswordAuth 1
+	# [ "${passauth}" -eq 0 ] && nopasswd=1
+	local port
+	DROPBEAR_ARGS="${nopasswd:+-s}${port:+-p $port}"
+
+	portN=2
+	while [ $portN -le 10 ] ; do
+		config_get port $section Port$portN
+		if [ -n "$port" ] ; then
+			DROPBEAR_ARGS="$DROPBEAR_ARGS -p $port"
+		fi
+		let portN=$portN+1
+	done
+	local bannerfile
+	config_get bannerfile "${section}" BannerFile
+	[ -f "$bannerfile" ] || bannerfile=''
+	local gatewayports
+	config_get_bool gatewayports "${section}" GatewayPorts 0
+	[ "${gatewayports}" -eq 1 ] || gatewayports=''
+	# local norootpasswd
+	# local rootpassauth
+	# config_get_bool rootpassauth "${section}" RootPasswordAuth 1
+	# [ "${rootpassauth}" -eq 0 ] && norootpasswd=1
+	local args
+	args="${port:+-p ${port} }${bannerfile:+-b $bannerfile }${gatewayports:+-a }-P /var/run/${NAME}.${PIDCOUNT}.pid"
+
+	[ "${verbosed}" -ne 0 ] && echo "${initscript}: section ${section} starting ${PROG} ${args}"
+	${PROG} ${args}
+	return $?
+}
+
+
+boot()
+{
+	start
+}
+
+start()
+{
+	/usr/sbin/arc_dropbear start
+	test $? -ne 0 && return
+	config_load "${NAME}"
+	config_foreach dropbear_start dropbear
+}
+
+stop()
+{
+	# killing all server processes
+	local pidfile
+	for pidfile in `ls /var/run/${NAME}.*.pid`
+	 do
+		start-stop-daemon -q -K -s KILL -p "${pidfile}" -n "${NAME}"
+		rm -f "${pidfile}"
+	done
+	[ -z "${pidfile}" ] && echo "${initscript}: no pid files, if you get problems with start then try killclients"
+}
+
+hotplug_start()
+{
+	/usr/sbin/arc_dropbear hotplug_start
+	test $? -ne 0 && return
+	start
+}
+
+killclients()
+{
+	local ignore=''
+	local server
+	local pid
+
+	pid="$$"
+	while [ "${pid}" -ne 0 ]
+	 do
+		pid=`cut -d ' ' -f 4 "/proc/${pid}/stat"`
+		[ "${pid}" -eq 0 ] && break
+
+		grep -F -q -e "${PROG}" "/proc/${pid}/cmdline" && {
+			append ignore "${pid}"
+			break
+		}
+	done
+
+	for server in `cat /var/run/${NAME}.*.pid`
+	 do
+		append ignore "${server}"
+	done
+
+	local skip
+	for pid in `pidof "${NAME}"`
+	 do
+		grep -F -q -e "${PROG}" "/proc/${pid}/cmdline" || {
+			continue
+		}
+
+		skip=0
+		for server in ${ignore}
+		 do
+			if [ "${pid}" == "${server}" ]
+			 then
+				skip=1
+				break
+			fi
+		done
+		[ "${skip}" -ne 0 ] && continue
+
+		echo "${initscript}: Killing ${pid}..."
+		kill -KILL ${pid}
+	done
+}
