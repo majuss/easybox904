@@ -5,9 +5,9 @@
 - Funktionierende Internetverbindung (zB. übers Handy, es werden nur ca. 30 MB Daten benötigt)
 - Computer mit Windows 10, Linux oder macOS
 
-1. Downloade die geöffnete [geöffnete Firmware](https://github.com/majuss/easybox904/raw/master/fullimage_AT904X-04.13.img)
+1. Downloade die geöffnete [geöffnete Firmware](https://github.com/majuss/easybox904/raw/master/resources/sesame.txt)
 2. Starte die EasyBox and verbinde dich mit ihr über LAN/WLAN. Browse zum Webinterface: `192.168.2.1` und stelle sicher das sie erreichbar ist. Nun halte den Resetknopf 5 Sekunden lang gedrückt. Die Box startet neu und löscht alle Konfigurationen. Nun gehe wieder auf das Webinterface und wähle den letzten Button "Aktualisierung", wähle das gedownloadete image und bestätige den Vorgang.
-3. Erstelle eine leere Datei auf deinem USB-Stick mit dem Namen "sesame.txt". Benutze dafür [Notepad++](https://notepad-plus-plus.org/download/v7.6.4.html) (der normale Editor funktioniert nicht!) oder unter Linux/macOS das shell-Programm `touch`. Wenn du dir bei dem Schritt nicht sicher bist, downloade die Datei von [hier]().
+3. Erstelle eine leere Datei auf deinem USB-Stick mit dem Namen "sesame.txt". Benutze dafür [Notepad++](https://notepad-plus-plus.org/download/v7.6.4.html) (der normale Editor funktioniert nicht!) oder unter Linux/macOS das shell-Programm `touch`. Wenn du dir bei dem Schritt nicht sicher bist, downloade die Datei von [hier](https://raw.githubusercontent.com/majuss/easybox904/master/resources/sesame.txt). Stecke den Stick in die Box und starte sie neu.
 4. Jetzt verbinden wir uns mit der Box über ein Programm namens `ssh`. Wähle nun entsprechend deinem Betriebssystem:
 
     **macOS / Linux**
@@ -19,6 +19,7 @@
     Das Passwort ist: `123456`. Nun bist du zur Box verbunden und kannst mit dem Konfigurieren beginnen (siehe unten).
 
     **Windows 10**
+    
     Öffne `Einstellungen` -> `Apps` -> `Optionale features verwalten` -> `Feature hinzufügen` und installiere den openSSH Client.
     
     Danach öffne eine CMD und füge ein:

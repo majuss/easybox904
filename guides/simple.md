@@ -6,10 +6,10 @@
 - Computer with Windows 10, Linux or macOS
 - FAT 32 formatted USB-Stick
 
-1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/fullimage_AT904X-04.13.img)
+1. Downlaod this opened firmware image: [opened Firmware](https://github.com/majuss/easybox904/raw/master/resources/sesame.txt)
 2. Start the EasyBox normally and connect via LAN or WLAN to it. Browse to the webinterface at: `192.168.2.1` and confirm it's responding. Now press the reset button on the back for at least 5 seconds. The Box will reset completely and restart. Once again browse to the webinterface.
 3. On the interface you are presented with the buttons, choose the last "Firmware Update" and select the downloaded fullimage file. Press install then confirm to flash.
-4. Create an empty file on your USB-Stick with [Notepad++](https://notepad-plus-plus.org/download/v7.6.4.html) (normal notepad will not work!) or Linux `touch` called sesame.txt. If your not sure if it was correctly created, download it from [here]().
+4. Create an empty file on your USB-Stick with [Notepad++](https://notepad-plus-plus.org/download/v7.6.4.html) (normal notepad will not work!) or Linux `touch` called sesame.txt. If your not sure if it was correctly created, download it from [here](https://raw.githubusercontent.com/majuss/easybox904/master/resources/sesame.txt). Now put the stick into the box and restart it.
 5. We now have to connect to the box via a program called `ssh` choose the appropriate point according to your operating system:
 
     **macOS / Linux**
@@ -21,6 +21,7 @@
     Type the password `123456`. You're now connected and can set the box up (see below).
 
     **Windows 10**
+    
     Open `Settings` -> `Apps` -> `Manage optional features` -> `Add Feature` and then click install on `openSSH Client`. Open a CMD and enter:
     ```
     ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 root@192.168.2.1

@@ -115,4 +115,4 @@ Compare the filesize from fullimage.img and the original firmware.bin (with `ls 
 
 ## Step three
 
-Follow the quick and easy [guide]() to flash your own image.
+Follow the quick and easy [guide](https://github.com/majuss/easybox904/blob/master/guides/simple.md) to flash your own image.
