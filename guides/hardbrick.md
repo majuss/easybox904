@@ -10,7 +10,7 @@
 - Install the package: `lrzsz`
 
 1. Shortcut the 2 pins with the label R148 next to the screen on the EB according to this [picture](https://wiki.openwrt.org/_media/media/arcadyan/eb904xdsl_pcb_r148_uart.jpg?w=500&tok=318f3d) for example by soldering two wires to the pins and simply connect them while starting, or use a tweezer etc.
-2. Connect you serial console according to this [picture](https://github.com/majuss/easybox904/blob/master/serial.JPG?raw=true) and connect the USB to your computer.
+2. Connect you serial console according to this [picture](https://github.com/majuss/easybox904/blob/master/resources/serial.JPG) and connect the USB to your computer.
 3. Start screen on your Debian with the command `screen /dev/ttyUSB0 115200`
 4. Now start the EB while you shortcut the pins. After it started you don't have to shortcut anymore.
 5. In the screen on your Debian you should see the short UART greeting message:
