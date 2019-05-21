@@ -38,6 +38,11 @@ config switch_vlan
         option ports '4t'
         option vid '7'
 ```
+Add ths line to `config dsl 'dsl'`:
+```
+        option firmware '/lib/fw.bin'
+```
+
 Exit nano by hitting *strg + x* and then *y* and *enter*. Then type the command `passwd root` and enter a new password for your box which is also used in the webinterface. Now simply type `reboot` and hit enter.
 
 21. Your easybox is now successfully setted up. You can reach it's webinterface at *https://192.168.1.1*
