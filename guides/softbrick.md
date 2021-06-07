@@ -26,6 +26,7 @@
     ```
 2. Now pull your LAN cable from your machine and disable WIFI. Open the System Preferences and got to Network. Choose your LAN-Connector and switch the IP setting from DHCP to manual. Enter `192.168.2.100` as IP and `255.255.255.0` as netmask, leave everything else blank. And hit apply.
 3. Now run: `sudo cp fullimage_AT904X-04.13.zip /private/tftpboot/fullimage.img` to copy the firmware image to the tftp-directory.
-4. Connect your EasyBox (yellow port) with your Mac with a LAN cable. Turn the box on while pressing the reset button. Release the button after 5 seconds. You now should see the red recovery screen. When it states that rescue process is complete, turn it off and on.
+4. Connect your EasyBox (yellow port) with your Mac with a LAN cable. Turn the box on while pressing the reset button. Release the button after 5 seconds. You now should see the red recovery screen.
+5. Start the TFTP daemon: `sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist`. When the box states that the rescue process is complete, turn it off and on.
 
 From here you can choose another guide to install the [opened Vodafone Firmware](https://github.com/majuss/easybox904/blob/master/guides/simple.md) or [openWrt](https://github.com/majuss/easybox904/blob/master/guides/openwrt.md).
