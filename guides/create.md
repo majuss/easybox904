@@ -65,7 +65,7 @@ After setting up everything we will analyse the firmware image and extract the f
 
 Inside of your `easyboxhack` directory type:
 ```bash
-binwalk fullimage_AT904X-04.13.zip
+binwalk fullimage_AT904X-04.13.bin
 ```
 The output should look like this:
 ```bash
