@@ -31,15 +31,15 @@ Ignore the .zip suffix, it's not zipped.
 
 Download `squashfs`, a utility to extract the filesystem from the firmware (or manual from the website: https://sourceforge.net/projects/squashfs/):
 ```bash
-wget https://master.dl.sourceforge.net/project/squashfs/squashfs/squashfs4.3/squashfs4.3.tar.gz
+wget https://sourceforge.net/projects/squashfs/files/squashfs/squashfs4.5/squashfs4.5.tar.gz
 ```
 Extract the tar with:
 ```bash
-tar -xzf squashfs4.3.tar.gz
+tar -xzf squashfs4.5.tar.gz
 ```
 Alter the Makefile of squashfs to include LZMA support:
 ```bash
-cd squashfs4.3/squashfs-tools
+cd squashfs4.5/squashfs-tools
 sed -i 's/#LZMA_XZ_SUPPORT/LZMA_XZ_SUPPORT/g' Makefile
 make
 ```
