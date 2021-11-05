@@ -82,9 +82,9 @@ You can see that the squashfs ranges from bit 64 to 23265795. This is what we ne
 
 To archive it type:
 ```bash
-dd if=fullimage_AT904X-04.13.zip of=first.part count=64 bs=1
-dd if=fullimage_AT904X-04.13.zip of=second.part skip=64 count=23265731 bs=1
-dd if=fullimage_AT904X-04.13.zip of=third.part skip=23265795 bs=1
+dd if=fullimage_AT904X-04.13.bin of=first.part count=64 bs=1
+dd if=fullimage_AT904X-04.13.bin of=second.part skip=64 count=23265731 bs=1
+dd if=fullimage_AT904X-04.13.bin of=third.part skip=23265795 bs=1
 ```
 The second part contains the squashfs. We need to extract the filesystem inside with:
 ```bash
